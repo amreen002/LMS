@@ -2,47 +2,32 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('SaleTeams', {
+    await queryInterface.createTable('Videos', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      date: {
-        type: Sequelize.DATEONLY
-      },
-      name: {
+      Title: {
+        field: 'Title', 
         type: Sequelize.STRING
       },
-      roleId: {
+      CoursesId: {
+        field: 'CoursesId', 
         type: Sequelize.INTEGER
       },
-      age: {
+      TopicId: {
+        field: 'TopicId', 
         type: Sequelize.INTEGER
       },
-      phoneNumber: {
-        type: Sequelize.BIGINT
-      },
-      email: {
+      VideoUplod: {
+        field: 'VideoUplod', 
         type: Sequelize.STRING
       },
-      workingStatus: {
+      VideoIframe: {
+        field: 'VideoIframe', 
         type: Sequelize.STRING
-      },
-      leadPlatform: {
-        type: Sequelize.STRING
-      },
-      telecallerPersonName: {
-        type: Sequelize.STRING,
-      },
-      remark: {
-        type: DataTypes.TEXT('long')
-      },
-      TelecallerCheckbox: {
-        field: 'TelecallerCheckbox',
-        type: DataTypes.BOOLEAN,
-        defaultValue:0
       },
       createdAt: {
         allowNull: false,
@@ -55,6 +40,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('SaleTeams');
+    await queryInterface.dropTable('Videos');
   }
 };

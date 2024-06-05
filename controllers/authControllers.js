@@ -171,7 +171,10 @@ exports.newPassword = async (req, res) => {
         if (Users) {
             const salt = bcrypt.genSaltSync(10, 'a');
             Users.password = bcrypt.hashSync(newPassword, salt);
+<<<<<<< HEAD
             console.log(Users)
+=======
+>>>>>>> 5765c38c72d7b75d4116b5360ac4e2bdfb80c8cd
             Users.save().then((saveduser) => {
                 res.json({
                     message: "Password Updated success",

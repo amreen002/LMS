@@ -3,7 +3,10 @@ const { Op } = require('sequelize');
 const { SaleTeam, User } = require('../models')
 exports.create = async (req, res) => {
     try {
+<<<<<<< HEAD
      /*    req.body.roleId =req.profile.id; */
+=======
+>>>>>>> 5765c38c72d7b75d4116b5360ac4e2bdfb80c8cd
         const saleteam = await SaleTeam.create(req.body)
         return res.status(200).json({
             saleteam: saleteam,
@@ -70,10 +73,17 @@ exports.findAll = async (req, res) => {
 
 exports.update = async (req, res) => {
     try {
+<<<<<<< HEAD
    /*      req.body.roleId =req.profile.id; */
         const saleteam = await SaleTeam.update(req.body, { where: { id: req.params.saleteamId },order: [['updatedAt', 'DESC']] });
         res.status(200).json({
             saleteam: saleteam,
+=======
+        const saleteam = await SaleTeam.update(req.body, { where: { id: req.params.saleteamId },order: [['updatedAt', 'DESC']] });
+        const sale = await SaleTeam.findOne({ where: { id: req.params.saleteamId },order: [['updatedAt', 'DESC']] });
+        res.status(200).json({
+            saleteam: sale,
+>>>>>>> 5765c38c72d7b75d4116b5360ac4e2bdfb80c8cd
             success: true,
             message: "Update Successfully Sale Team "
         });

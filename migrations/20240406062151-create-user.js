@@ -16,7 +16,11 @@ module.exports = {
         type: Sequelize.STRING
       },
       phoneNumber: {
+<<<<<<< HEAD
         type: Sequelize.STRING
+=======
+        type: Sequelize.BIGINT
+>>>>>>> 5765c38c72d7b75d4116b5360ac4e2bdfb80c8cd
       },
       email: {
         type: Sequelize.STRING

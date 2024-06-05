@@ -27,10 +27,14 @@ module.exports = (sequelize, DataTypes) => {
   }
   FrontDesk.init({
     date: {
+<<<<<<< HEAD
       type: DataTypes.DATE,
    /*    get() {
         return moment(this.getDataValue('date')).format('DD-MM-YYYY');
       }, */
+=======
+      type: DataTypes.DATEONLY,
+>>>>>>> 5765c38c72d7b75d4116b5360ac4e2bdfb80c8cd
     },
     uniqueId: {
       type: DataTypes.INTEGER
@@ -80,10 +84,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING
     },
     visitDate: {
+<<<<<<< HEAD
       type: DataTypes.DATE,
  /*      get() {
         return moment(this.getDataValue('visitDate')).format('DD-MM-YYYY');
       }, */
+=======
+      type: DataTypes.DATEONLY,
+>>>>>>> 5765c38c72d7b75d4116b5360ac4e2bdfb80c8cd
     },
     remark: {
       type: DataTypes.TEXT('long')

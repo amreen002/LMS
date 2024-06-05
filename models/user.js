@@ -1,4 +1,5 @@
 'use strict';
+<<<<<<< HEAD
 const {
   Model
 } = require('sequelize');
@@ -9,11 +10,25 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
+=======
+const {Model} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class User extends Model {
+>>>>>>> 5765c38c72d7b75d4116b5360ac4e2bdfb80c8cd
     static associate(models) {
       this.belongsTo(models.Role, { foreignKey: 'departmentId' });    
       this.hasMany(models.SaleTeam, { foreignKey: 'roleId' });   
       this.hasMany(models.TelecallerDepartment, { foreignKey: 'roleId' });  
       this.hasMany(models.FrontDesk, { foreignKey: 'roleId' }); 
+<<<<<<< HEAD
+=======
+      this.hasMany(models.Teacher, { foreignKey: 'roleId' }); 
+      this.hasMany(models.Student, { foreignKey: 'roleId' }); 
+      this.hasMany(models.Courses, { foreignKey: 'userId' });  
+      this.hasMany(models.Batch, { foreignKey: 'userId' });  
+      this.hasMany(models.Quize, { foreignKey: 'userId' }); 
+      this.hasMany(models.Categories, { foreignKey: 'userId' });  
+>>>>>>> 5765c38c72d7b75d4116b5360ac4e2bdfb80c8cd
     }
   }
   User.init({
@@ -24,7 +39,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING
     },
     phoneNumber: {
+<<<<<<< HEAD
       type: DataTypes.STRING
+=======
+      type: DataTypes.BIGINT
+>>>>>>> 5765c38c72d7b75d4116b5360ac4e2bdfb80c8cd
     },
     email: {
       type: DataTypes.STRING

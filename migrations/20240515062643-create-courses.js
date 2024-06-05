@@ -15,6 +15,25 @@ module.exports = {
       userId:{
         type: Sequelize.INTEGER,
       },
+<<<<<<< HEAD
+=======
+      CoursePrice:{
+        field: 'CoursePrice',
+        type: Sequelize.DOUBLE(25,2),
+      },
+      CourseCategoryId:{
+        field: 'CourseCategoryId',
+        type: Sequelize.INTEGER,
+      },
+      CourseDuration :{
+        field: 'CourseDuration',
+        type: Sequelize.INTEGER,
+      },
+      CourseCode:{
+        field: 'CourseCode',
+        type: Sequelize.STRING,
+      },
+>>>>>>> 5765c38c72d7b75d4116b5360ac4e2bdfb80c8cd
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

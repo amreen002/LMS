@@ -50,7 +50,10 @@ exports.create = async (req, res) => {
             active: req.body.active
         }
 
+<<<<<<< HEAD
         console.log(data)
+=======
+>>>>>>> 5765c38c72d7b75d4116b5360ac4e2bdfb80c8cd
         const users = await User.create(data)
 
         users.createdAt = null
@@ -120,7 +123,10 @@ exports.findAll = async (req, res) => {
             return res.status(200).json({ users: userchild, success: true, message: "Successfully retrieved all users" });
         } else {
             let allUsers = [loggedInUser, ...userchild];
+<<<<<<< HEAD
             console.log(allUsers)
+=======
+>>>>>>> 5765c38c72d7b75d4116b5360ac4e2bdfb80c8cd
             return res.status(200).json({ users: allUsers, success: true, message: "Successfully retrieved all users" });
         }
 

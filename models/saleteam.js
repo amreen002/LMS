@@ -16,10 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   SaleTeam.init({
     date: {
-      type: DataTypes.DATE,
-   /*    get() {
-        return moment(this.getDataValue('date')).format('DD-MM-YYYY');
-      }, */
+      type: DataTypes.DATEONLY,
     },
     name: {
       type: DataTypes.STRING

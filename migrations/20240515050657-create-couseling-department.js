@@ -10,10 +10,14 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       date: {
+<<<<<<< HEAD
         type: Sequelize.DATE,
         /*    get() {
              return moment(this.getDataValue('date')).format('DD-MM-YYYY');
            }, */
+=======
+        type: Sequelize.DATEONLY,
+>>>>>>> 5765c38c72d7b75d4116b5360ac4e2bdfb80c8cd
       },
       uniqueId: {
         type: Sequelize.INTEGER
@@ -63,10 +67,14 @@ module.exports = {
         type: Sequelize.STRING
       },
       visitDate: {
+<<<<<<< HEAD
         type: Sequelize.DATE,
         /*      get() {
                return moment(this.getDataValue('visitDate')).format('DD-MM-YYYY');
              }, */
+=======
+        type: Sequelize.DATEONLY,
+>>>>>>> 5765c38c72d7b75d4116b5360ac4e2bdfb80c8cd
       },
       remark: {
         type: Sequelize.TEXT('long')
