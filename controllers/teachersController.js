@@ -1,7 +1,7 @@
 
 const { Op } = require('sequelize');
 const bcrypt = require('bcrypt');
-const { Teacher, User,Role,Address,sequelize } = require('../models'); // Adjust the path as necessary
+const { Teacher, User, Role, Address, sequelize } = require('../models'); // Adjust the path as necessary
 
 exports.create = async (req, res) => {
     const transaction = await sequelize.transaction();
@@ -29,6 +29,7 @@ exports.create = async (req, res) => {
 
         let teachers = await Teacher.create(teacherData, { transaction });
 
+
         // Set the necessary fields for the Address creation
         req.body.AddressableId = teachers.id;
         req.body.AddressableType = "Instructor";
@@ -39,6 +40,18 @@ exports.create = async (req, res) => {
             { AddressableId: address.id },
             { where: { id: teachers.id }, transaction }
         );
+        let users = {
+            teacherId: teachers.id,
+            name: teachers.Name,
+            userName: teachers.Username,
+            phoneNumber: teachers.PhoneNumber,
+            email: teachers.Email,
+            password: teachers.Password,
+            assignToUsers: req.profile.id,
+            departmentId: 3,
+            roleName: "Admin",
+        }
+        await User.create(users, { transaction });
         await transaction.commit();
         return res.status(200).json({
             teachers: teachers,
@@ -151,7 +164,18 @@ exports.update = async (req, res) => {
         // Retrieve the updated Address entry
         const updatedAddress = await Address.findOne({ where: { id: address.id }, transaction });
 
-        // Commit the transaction
+        let users = {
+            name: teachers.Name,
+            userName: teachers.Username,
+            phoneNumber: teachers.PhoneNumber,
+            email: teachers.Email,
+            password: teachers.Password,
+/*             assignToUsers: req.profile.id, */
+            departmentId: 3,
+            roleName: "Admin",
+        }
+        let usersupdate = await User.findOne({ where: { teacherId: req.params.teachersId }, transaction });
+        await User.update(users, { where: { id: usersupdate.id }, transaction });
         await transaction.commit();
 
         res.status(200).json({

@@ -10,7 +10,12 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.Batch, { foreignKey: 'CoursesId' });
       this.hasMany(models.Student, { foreignKey: 'CoursesId' });
       this.hasMany(models.FrontDesk, { foreignKey: 'coursesId' });
+      this.hasMany(models.Topic, { foreignKey: 'CoursesId' });
+      this.hasMany(models.Lession, { foreignKey: 'CoursesId' });
+      this.hasMany(models.Video, { foreignKey: 'CoursesId' });
+      this.hasMany(models.Quize , { foreignKey: 'CourseId' });
     }
+    
   }
   Courses.init({
     name: {

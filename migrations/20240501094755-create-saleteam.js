@@ -37,12 +37,12 @@ module.exports = {
         type: Sequelize.STRING,
       },
       remark: {
-        type: DataTypes.TEXT('long')
+        type: Sequelize.TEXT('long')
       },
       TelecallerCheckbox: {
         field: 'TelecallerCheckbox',
-        type: DataTypes.BOOLEAN,
-        defaultValue:0
+        type: Sequelize.BOOLEAN,
+        defaultValue: 0
       },
       createdAt: {
         allowNull: false,

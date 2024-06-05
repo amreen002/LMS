@@ -1,5 +1,5 @@
 
-const { Topic,Role ,User} = require('../models')
+const { Topic ,User ,Courses,Role} = require('../models')
 exports.create = async (req, res) => {
     try {
       
@@ -23,7 +23,7 @@ exports.create = async (req, res) => {
 
 exports.findOne = async (req, res) => {
     try {
-        const topic = await Topic.findOne({ where: { id: req.params.topicId },include: [{ model: User }] });
+        const topic = await Topic.findOne({ where: { id: req.params.topicId },include: [ { model: Courses }]});
         res.status(200).json({
             topic: topic,
             success: true,
@@ -42,7 +42,7 @@ exports.findOne = async (req, res) => {
 exports.findAll = async (req, res) => {
     try {
         let where={}
-        let topic = await Topic.findAll({where,include: [{ model: User,include: [{ model: Role }] }]});
+        let topic = await Topic.findAll({where ,include: [ { model: Courses }]});
         res.status(200).json({
             topic: topic,
             success: true,

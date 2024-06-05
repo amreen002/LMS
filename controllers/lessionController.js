@@ -1,9 +1,17 @@
 
-const { Lession, Role, User } = require('../models')
+const { Op } = require('sequelize')
+const path =  require("path");
+const { Lession, Role, User ,Batch, Topic ,Courses,Categories} = require('../models')
 exports.create = async (req, res) => {
     try {
 
-        const lession = await Lession.create(req.body)
+         let data = {
+            LessionTitle:req.body.LessionTitle,
+            CoursesId:req.body.CoursesId,
+            TopicId:req.body.TopicId,
+            LessionUpload:req.file.path,
+         }
+        const lession = await Lession.create(data)
 
         return res.status(200).json({
             lession: lession,
@@ -23,7 +31,7 @@ exports.create = async (req, res) => {
 
 exports.findOne = async (req, res) => {
     try {
-        const lession = await Lession.findOne({ where: { id: req.params.lessionId }, include: [{ model: User }] });
+        const lession = await Lession.findOne({ where: { id: req.params.lessionId }, include: [{model:Courses,include: [{ model: Topic }] }] });
         res.status(200).json({
             lession: lession,
             success: true,
@@ -42,7 +50,8 @@ exports.findOne = async (req, res) => {
 exports.findAll = async (req, res) => {
     try {
         let where = {}
-        let lession = await Lession.findAll({ where, include: [{ model: User, include: [{ model: Role }] }] });
+
+        let lession = await Lession.findAll({ where, include: [{model:Courses,include: [{ model: Topic },{model:Categories},{  model: Batch,}] }]});
         res.status(200).json({
             lession: lession,
             success: true,
@@ -60,7 +69,13 @@ exports.findAll = async (req, res) => {
 
 exports.update = async (req, res) => {
     try {
-        const lession = await Lession.update(req.body, { where: { id: req.params.lessionId } });
+        let data = {
+            LessionTitle:req.body.LessionTitle,
+            CoursesId:req.body.CoursesId,
+            TopicId:req.body.TopicId,
+            LessionUpload:req.file.path,
+         }
+        const lession = await Lession.update(data, { where: { id: req.params.lessionId } });
         res.status(200).json({
             lession: lession,
             success: true,

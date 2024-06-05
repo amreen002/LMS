@@ -1,9 +1,16 @@
 
-const { Video, SaleTeam,Role ,User} = require('../models')
+const { Video, Courses, Topic, Categories } = require('../models')
 exports.create = async (req, res) => {
     try {
-      
-        const video = await Video.create(req.body)
+        let data = {
+            Title: req.body.Title,
+            CoursesId: req.body.CoursesId,
+            TopicId: req.body.TopicId,
+            VideoUplod: req.file.path,
+            VideoIframe: req.body.VideoIframe,
+        }
+
+        const video = await Video.create(data)
 
         return res.status(200).json({
             video: video,
@@ -23,7 +30,7 @@ exports.create = async (req, res) => {
 
 exports.findOne = async (req, res) => {
     try {
-        const video = await Video.findOne({ where: { id: req.params.videoId },include: [{ model: User }] });
+        const video = await Video.findOne({ where: { id: req.params.videoId }, include: [{model:Courses,include: [{ model: Topic }] }] });
         res.status(200).json({
             video: video,
             success: true,
@@ -41,8 +48,9 @@ exports.findOne = async (req, res) => {
 
 exports.findAll = async (req, res) => {
     try {
-        let where={}
-        let video = await Video.findAll({where,include: [{ model: User,include: [{ model: Role }] }]});
+        let where = {}
+        let video = await Video.findAll({ where ,include: [{model:Courses,include: [{ model: Topic },{model:Categories}] }]});
+
         res.status(200).json({
             video: video,
             success: true,
@@ -60,7 +68,14 @@ exports.findAll = async (req, res) => {
 
 exports.update = async (req, res) => {
     try {
-        const video = await Video.update(req.body, { where: { id: req.params.videoId } });
+        let data = {
+            Title: req.body.Title,
+            CoursesId: req.body.CoursesId,
+            TopicId: req.body.TopicId,
+            VideoUplod: req.file.path,
+            VideoIframe: req.body.VideoIframe,
+        }
+        const video = await Video.update(data, { where: { id: req.params.videoId } });
         res.status(200).json({
             video: video,
             success: true,

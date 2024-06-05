@@ -10,11 +10,47 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      this.belongsTo(models.Quize, { foreignKey: 'QuizzeId' });
+      this.belongsTo(models.CategoriesQuestion, { foreignKey: 'CategoryId' });
     }
   }
   Questions.init({
-    name: DataTypes.STRING
+    Questions: {
+      field: 'Questions',
+      type: DataTypes.STRING,
+    },
+    Type: {
+      field: 'Type',
+      type: DataTypes.ENUM('Easy','Medium','Hard')
+    },
+    QuizzeId:{
+      field: 'QuizzeId',
+      type: DataTypes.INTEGER
+    },
+    CategoryId:{
+      field: 'CategoryId',
+      type: DataTypes.INTEGER
+    },
+    Options1: {
+      field: 'Options1',
+      type: DataTypes.STRING
+    },
+    Options2:{
+      field: 'Options2',
+      type: DataTypes.STRING
+    },
+    Options3:{
+      field: 'Options3',
+      type: DataTypes.STRING
+    },
+    Options4:{
+      field: 'Options4',
+      type: DataTypes.STRING
+    },
+    Answer:{
+      field: 'Answer',
+      type: DataTypes.STRING
+    },
   }, {
     sequelize,
     modelName: 'Questions',

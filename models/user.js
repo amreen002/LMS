@@ -48,6 +48,16 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       defaultValue: 0,
     },
+    teacherId: {
+      type:DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 0,
+    },
+    studentId: {
+      type:DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 0,
+    },
     roleName: {
       type: DataTypes.ENUM('Super Admin','Admin','Sub Admin')
     },
