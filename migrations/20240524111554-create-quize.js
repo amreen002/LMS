@@ -1,4 +1,7 @@
 'use strict';
+
+const { array } = require('../middlware/upload');
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -49,23 +52,29 @@ module.exports = {
         field: 'Instructions',
         type: Sequelize.TEXT('long')
       },
-      BatchId:{
-        field: 'BatchId',
-        type: Sequelize.INTEGER
-      },
       QuizzCategoryId:{
         field: 'QuizzCategoryId',
         type: Sequelize.INTEGER
       },
       userId:{
         field: 'userId',
-        type: DataTypes.INTEGER
+        type: Sequelize.INTEGER
+      },
+      BatchId:{
+        field: 'BatchId',
+        type: Sequelize.JSON, 
+      },
+      CourseId: {
+        field: 'CourseId',
+        type: Sequelize.INTEGER
       },
       createdAt: {
+        field: 'createdAt',
         allowNull: false,
         type: Sequelize.DATE
       },
       updatedAt: {
+        field: 'updatedAt',
         allowNull: false,
         type: Sequelize.DATE
       }

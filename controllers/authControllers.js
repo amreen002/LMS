@@ -1,4 +1,4 @@
-const { User,Role } = require('../models')
+const { User,Role ,Teacher,Student} = require('../models')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const secretkey = "token"
@@ -8,7 +8,7 @@ exports.login = async (req, res) => {
 
         const password = req.body.password;
         const username = req.body.email
-        const users = await User.findOne({ where: { email: username } })
+        const users = await User.findOne({ where: { email: username }, include: [{ model: Role },{ model: Teacher },{ model: Student }] })
         if (!users) {
             return res.status(400).json({
                 success: false,

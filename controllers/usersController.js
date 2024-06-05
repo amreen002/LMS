@@ -156,8 +156,8 @@ exports.update = async (req, res) => {
             departmentId: req.body.departmentId,
             roleName: roleWiseUsers,
             assignToUsers: req.profile.id,
-            /*   image: req.file.filename,
-              src: req.file.path, */
+            image: req.file.filename,
+            src: req.file.path,
             active: req.body.active
         }
 

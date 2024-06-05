@@ -2,10 +2,10 @@ var express = require('express')
 var multer  = require('multer')
 const path = require('path')
 
-const uploadPath = path.join(__dirname, '../uploads');
+
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, uploadPath);
+        cb(null, './uploads');
     },
     filename: function (req, file, cb) {
         cb(null, new Date().toISOString().replace(/:/g, '-') + '-' + file.originalname);

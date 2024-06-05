@@ -1,32 +1,36 @@
 
-const { Quize, Role, User, Categories,Teacher, Batch, sequelize } = require('../models')
+const { Quize, Role, User, Categories, Teacher, Batch, sequelize } = require('../models')
 
 exports.create = async (req, res) => {
     try {
         req.body.userId = req.profile.id;
+
+ /*        // Parsing the questions
         const EasyQuestions = JSON.parse(req.body.EasyQuestions);
         const MediumQuestions = JSON.parse(req.body.MediumQuestions);
         const HardQuestions = JSON.parse(req.body.HardQuestions);
-        let dataTolotal = EasyQuestions + MediumQuestions + HardQuestions
-        let totalmarks
-        req.body.TotalQuestions = dataTolotal
-        totalmarks= (EasyQuestions*1)+(MediumQuestions*2)+(HardQuestions*4)
-        req.body.TotalMarks = totalmarks
-        const quizze = await Quize.create(req.body)
+
+        // Calculating total questions and marks
+        const totalQuestions = EasyQuestions.length + MediumQuestions.length + HardQuestions.length;
+        const totalMarks = (EasyQuestions.length * 1) + (MediumQuestions.length * 2) + (HardQuestions.length * 4);
+
+        req.body.TotalQuestions = totalQuestions;
+        req.body.TotalMarks = totalMarks; */
+
+        const quizze = await Quize.create(req.body);
         return res.status(200).json({
             quizze: quizze,
             success: true,
-            message: "Quizze Created SuccessFully"
-        })
+            message: "Quiz Created Successfully"
+        });
     } catch (error) {
-        console.log(error)
+        console.error(error);
         return res.status(500).json({
-            error: error,
+            error: error.message,
             success: false,
-            message: "Quizze error"
-        })
+            message: "Quiz creation error"
+        });
     }
-
 }
 
 exports.findOne = async (req, res) => {
@@ -49,80 +53,43 @@ exports.findOne = async (req, res) => {
 
 exports.findAll = async (req, res) => {
     try {
-        let where = {}
-        let quizze = await Quize.findAll({
-            where, attributes: [
-                'QuizzName',
-                'QuizzStartTime',
-                'QuizzEndTime',
-                'QuizzTestDuration',
-                'EasyQuestions',
-                'MediumQuestions',
-                'HardQuestions',
-                'TotalQuestions',
-                'TotalMarks',
-                'Instructions',
-                'BatchId',
-                'QuizzCategoryId',
-                'userId'
-            ], include: [{ model: User, include: [{ model: Role }] }, { model: Categories }, { model: Batch ,include:[{model :Teacher}]}]
+        const quizze = await Quize.findAll({
+            include: [
+                { model: User, include: [{ model: Role }] },
+                { model: Categories },
+                { model: Batch }
+            ]
         });
 
-
-        /*    const formatTime = (time) => {
-               const date = new Date(time);
-               const year = date.getFullYear();
-               const month = String(date.getMonth() + 1).padStart(2, '0');
-               const day = String(date.getDate()).padStart(2, '0');
-               let hours = date.getHours();
-               const minutes = String(date.getMinutes()).padStart(2, '0');
-               const newformat = hours >= 12 ? 'PM' : 'AM';
-               hours = hours % 12;
-               hours = hours ? hours : 12;
-               console.log(`${year}-${month}-${day} ${hours}:${minutes} ${newformat}`)
-               return `${year}-${month}-${day} ${hours}:${minutes} ${newformat}`;
-           }; */
+        const formatTimeToAMPM = (timeString) => {
+            const date = new Date(timeString);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            let hours = date.getHours();
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const newformat = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            return `${year}-${month}-${day} ${hours}:${minutes} ${newformat}`;
+        };
 
         for (let index = 0; index < quizze.length; index++) {
-            let startTime = quizze[index].QuizzStartTime;
-            let endTime = quizze[index].QuizzEndTime;
-            let quiz = quizze[index];
-            // Format Start Time
-            let formattedStartTime = startTime.toLocaleString('en-US', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true
-            });
-            quiz.QuizzStartTime = formattedStartTime;
-            // Format End Time
-            let formattedEndTime = endTime.toLocaleString('en-US', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true
-            });
-            quiz.QuizzEndTime = formattedEndTime;
+            quizze[index].QuizzStartTime = formatTimeToAMPM(quizze[index].QuizzStartTime);
+            quizze[index].QuizzEndTime = formatTimeToAMPM(quizze[index].QuizzEndTime);
         }
 
-
-
-
-        res.status(200).json({
+        return res.status(200).json({
             quizze: quizze,
             success: true,
             message: "Get All Quizze Data Success"
         });
     } catch (error) {
-        console.log(error)
-        res.status(500).json({
+        console.log(error);
+        return res.status(500).json({
             error: error,
             success: false,
-            message: "Get Not All Quizze Success"
+            message: "Get All Quizze Data Failed"
         });
     }
 }
@@ -130,14 +97,14 @@ exports.findAll = async (req, res) => {
 exports.update = async (req, res) => {
     try {
         req.body.userId = req.profile.id;
-        const EasyQuestions = JSON.parse(req.body.EasyQuestions);
+/*         const EasyQuestions = JSON.parse(req.body.EasyQuestions);
         const MediumQuestions = JSON.parse(req.body.MediumQuestions);
         const HardQuestions = JSON.parse(req.body.HardQuestions);
         let dataTolota = EasyQuestions + MediumQuestions + HardQuestions
         let totalmarks
         req.body.TotalQuestions = dataTolota
-        totalmarks= (EasyQuestions*1)+(MediumQuestions*2)+(HardQuestions*4)
-        req.body.TotalMarks = totalmarks
+        totalmarks = (EasyQuestions * 1) + (MediumQuestions * 2) + (HardQuestions * 4)
+        req.body.TotalMarks = totalmarks */
         const quizze = await Quize.update(req.body, { where: { id: req.params.quizzeId } });
         res.status(200).json({
             quizze: quizze,

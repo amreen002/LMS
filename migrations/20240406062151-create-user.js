@@ -31,22 +31,32 @@ module.exports = {
       resentPassword: {
         type: Sequelize.STRING
       },
-      passwordResetOtp:{
+      passwordResetOtp: {
         type: Sequelize.STRING
       },
-      expireToken:{
+      expireToken: {
         type: Sequelize.STRING
       },
-      assignToUsers:{
+      assignToUsers: {
         type: Sequelize.INTEGER
       },
       departmentId: {
-        type:Sequelize.INTEGER,
+        type: Sequelize.INTEGER,
         allowNull: true,
         defaultValue: 0,
       },
-      roleName:{
-        type: Sequelize.ENUM('Super Admin','Admin','Sub Admin')
+      teacherId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        defaultValue: 0,
+      },
+      studentId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        defaultValue: 0,
+      },
+      roleName: {
+        type: Sequelize.ENUM('Super Admin', 'Admin', 'Sub Admin')
       },
       image: {
         type: Sequelize.STRING
@@ -60,8 +70,8 @@ module.exports = {
       message: {
         type: Sequelize.TEXT('long')
       },
-      active:{
-        type : Sequelize.BOOLEAN,  
+      active: {
+        type: Sequelize.BOOLEAN,
       },
       createdAt: {
         allowNull: false,

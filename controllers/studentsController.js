@@ -46,6 +46,18 @@ exports.create = async (req, res) => {
             { AddressableId: address.id },
             { where: { id: students.id }, transaction }
         );
+        let users = {
+            studentId: students.id,
+            name: students.Name,
+            userName: students.Username,
+            phoneNumber: students.PhoneNumber,
+            email: students.Email,
+            password: students.Password,
+            assignToUsers: req.profile.id,
+            departmentId: 4,
+            roleName: "Admin",
+        }
+        await User.create(users, { transaction });
         await transaction.commit();
         return res.status(200).json({
             students: students,
@@ -169,6 +181,17 @@ exports.update = async (req, res) => {
         // Retrieve the updated Address entry
         const updatedAddress = await Address.findOne({ where: { id: address.id }, transaction });
 
+        let users = {
+            name: students.Name,
+            userName: students.Username,
+            phoneNumber: students.PhoneNumber,
+            email: students.Email,
+/*             assignToUsers: req.profile.id, */
+            departmentId: 4,
+            roleName: "Admin",
+        }
+        let usersupdate = await User.findOne({ where: { studentId: req.params.studentsId }, transaction });
+        await User.update(users, { where: { id: usersupdate.id }, transaction });
         // Commit the transaction
         await transaction.commit();
 

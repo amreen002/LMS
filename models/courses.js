@@ -14,8 +14,16 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.Batch, { foreignKey: 'CoursesId' });
       this.hasMany(models.Student, { foreignKey: 'CoursesId' });
       this.hasMany(models.FrontDesk, { foreignKey: 'coursesId' });
+<<<<<<< HEAD
 >>>>>>> 5765c38c72d7b75d4116b5360ac4e2bdfb80c8cd
+=======
+      this.hasMany(models.Topic, { foreignKey: 'CoursesId' });
+      this.hasMany(models.Lession, { foreignKey: 'CoursesId' });
+      this.hasMany(models.Video, { foreignKey: 'CoursesId' });
+      this.hasMany(models.Quize , { foreignKey: 'CourseId' });
+>>>>>>> 2660f98d96b6a73e799f3a0179058cd449f2020f
     }
+    
   }
   Courses.init({
     name: {

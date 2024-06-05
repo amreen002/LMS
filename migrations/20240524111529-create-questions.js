@@ -9,7 +9,40 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      name: {
+      Questions: {
+        field: 'Questions',
+        type: Sequelize.STRING,
+      },
+      Type: {
+        field: 'Type',
+        type: Sequelize.ENUM('Easy','Medium','Hard')
+      },
+      QuizzeId:{
+        field: 'QuizzeId',
+        type: Sequelize.INTEGER
+      },
+      CategoryId:{
+        field: 'CategoryId',
+        type: Sequelize.INTEGER
+      },
+      Options1: {
+        field: 'Options1',
+        type: Sequelize.STRING
+      },
+      Options2:{
+        field: 'Options2',
+        type: Sequelize.STRING
+      },
+      Options3:{
+        field: 'Options3',
+        type: Sequelize.STRING
+      },
+      Options4:{
+        field: 'Options4',
+        type: Sequelize.STRING
+      },
+      Answer:{
+        field: 'Answer',
         type: Sequelize.STRING
       },
       createdAt: {

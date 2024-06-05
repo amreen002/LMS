@@ -31,6 +31,16 @@ const UserPermissionDepartmentRouter = require('./routers/UserPermissionRouter')
 const FrontdeskRouter =require('./routers/FrontDeskRouter');
 const CoursesRouter = require('./routers/CoursesRouter')
 const CounselorDepartmentRouter = require('./routers/CounselorDepartmentRouter')
+const TeachersRouter = require('./routers/TeachersRouter')
+const StudentsRouter = require('./routers/StudentsRouter')
+const BatchRouter = require('./routers/BatchRouter')
+const QuizzeRouter =require('./routers/QuizzeRouter') 
+const CategoriesRouter = require('./routers/CategoriesRouter')
+const TopicRouter = require('./routers/TopicRouter')
+const LessionRouter = require('./routers/LessionRouter')
+const VideoRouter = require('./routers/VideoRouter') 
+const QuestionsRouter = require('./routers/QuestionsRouter') 
+const QuestionCategoriesRouter =require('./routers/QuestionCategoriesRouter')
 app.use(cors());
 
 app.use(express.json());
@@ -48,6 +58,16 @@ app.use('/api', UserPermissionDepartmentRouter)
 app.use('/api', CoursesRouter )
 app.use('/api', FrontdeskRouter )
 app.use('/api', CounselorDepartmentRouter )
+app.use('/api', TeachersRouter )
+app.use('/api', StudentsRouter )
+app.use('/api', BatchRouter )
+app.use('/api', QuizzeRouter )
+app.use('/api', CategoriesRouter )
+app.use('/api', TopicRouter )
+app.use('/api', LessionRouter )
+app.use('/api', VideoRouter )
+app.use('/api', QuestionsRouter )
+app.use('/api', QuestionCategoriesRouter )
 const PORT = 3000
 //Starting a server
 app.listen(PORT, async () => {

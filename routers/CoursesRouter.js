@@ -5,11 +5,15 @@ let {checkauth,getLogedInUser} = require('../middlware/userAuth')
 router.post('/addcourses', checkauth, getLogedInUser, courses.create)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 router.get('/listcourses',checkauth, getLogedInUser, courses.findAll);
 
 router.get('/listcourses/:coursesId', checkauth, getLogedInUser,courses.findOne);
 =======
 router.get('/listcourses', checkauth, getLogedInUser,courses.findAll);
+=======
+router.get('/listcourses', /* checkauth, getLogedInUser */courses.findAll);
+>>>>>>> 2660f98d96b6a73e799f3a0179058cd449f2020f
 
 router.get('/listcourses/:coursesId', checkauth, getLogedInUser, courses.findOne);
 
