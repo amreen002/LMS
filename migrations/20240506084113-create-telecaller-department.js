@@ -9,12 +9,8 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      date: {
-<<<<<<< HEAD
-        type: Sequelize.DATE
-=======
+      date: {        
         type: Sequelize.DATEONLY
->>>>>>> 5765c38c72d7b75d4116b5360ac4e2bdfb80c8cd
       },
       TelecallerCheckbox: {
         field: 'TelecallerCheckbox',
