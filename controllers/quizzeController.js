@@ -60,24 +60,20 @@ exports.findAll = async (req, res) => {
                 { model: Batch }
             ]
         });
-
+/* 
         const formatTimeToAMPM = (timeString) => {
             const date = new Date(timeString);
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            let hours = date.getHours();
-            const minutes = String(date.getMinutes()).padStart(2, '0');
-            const newformat = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12;
-            hours = hours ? hours : 12; // the hour '0' should be '12'
-            return `${year}-${month}-${day} ${hours}:${minutes} ${newformat}`;
+            const dateFullYear = String(date.getDate()).padStart(2, '0') + "-" + String(date.getMonth() + 1).padStart(2, '0') + "-" +  date.getFullYear() ;
+            const [hours, minutes] = timeString.slice(0, 19).replace('T', ' ');
+            const period = hours >= 12 ? 'PM' : 'AM';
+            const formattedHours = hours % 12 || 12;
+            return `${dateFullYear} ${formattedHours}:${minutes.toString().padStart(2, '0')} ${period}`;
         };
 
         for (let index = 0; index < quizze.length; index++) {
             quizze[index].QuizzStartTime = formatTimeToAMPM(quizze[index].QuizzStartTime);
             quizze[index].QuizzEndTime = formatTimeToAMPM(quizze[index].QuizzEndTime);
-        }
+        } */
 
         return res.status(200).json({
             quizze: quizze,

@@ -49,6 +49,11 @@ module.exports = {
         field: 'CoursesId',
         type: Sequelize.INTEGER,
       },
+      BatchId:{
+        field: 'BatchId',
+        type: Sequelize.INTEGER,
+      },
+  
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

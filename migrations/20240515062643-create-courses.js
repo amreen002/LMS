@@ -25,11 +25,28 @@ module.exports = {
       },
       CourseDuration :{
         field: 'CourseDuration',
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,    
       },
       CourseCode:{
         field: 'CourseCode',
         type: Sequelize.STRING,
+      },
+      CourseUplod:{
+        field: 'CourseUplod',
+        type: Sequelize.STRING,    
+      },
+      Status:{
+        field: 'Status',
+        type: Sequelize.BOOLEAN,   
+        defaultValue:0
+      },
+      AboutCourse:{
+        field: 'AboutCourse',
+        type: Sequelize.TEXT('long'),   
+      },
+      Description:{
+        field: 'Description',
+        type: Sequelize.TEXT('long'),   
       },
       createdAt: {
         allowNull: false,

@@ -11,7 +11,7 @@ router.get('/video',checkauth, getLogedInUser, video.findAll);
 
 router.get('/video/:videoId', checkauth, getLogedInUser,video.findOne);
 
-router.put('/video/:videoId', checkauth, getLogedInUser, upload.single('file'), video.update);
+router.patch('/video/:videoId', checkauth, getLogedInUser, upload.single('file'), video.update);
 
 router.delete('/video/:videoId', checkauth, getLogedInUser, video.delete);
 

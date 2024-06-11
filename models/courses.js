@@ -34,12 +34,29 @@ module.exports = (sequelize, DataTypes) => {
     },
     CourseDuration :{
       field: 'CourseDuration',
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,    
     },
     CourseCode:{
       field: 'CourseCode',
       type: DataTypes.STRING,
     },
+    CourseUplod:{
+      field: 'CourseUplod',
+      type: DataTypes.STRING,    
+    },
+    Status:{
+      field: 'Status',
+      type: DataTypes.BOOLEAN,   
+      defaultValue:0
+    },
+    AboutCourse:{
+      field: 'AboutCourse',
+      type: DataTypes.TEXT('long'),   
+    },
+    Description:{
+      field: 'Description',
+      type: DataTypes.TEXT('long'),   
+    }
   }, {
     sequelize,
     modelName: 'Courses',

@@ -1,6 +1,8 @@
 
-const { Video, Courses, Topic, Categories } = require('../models')
+
+const { Video, Courses, Topic, Categories ,sequelize } = require('../models')
 exports.create = async (req, res) => {
+    let transaction = await sequelize.transaction();
     try {
         let data = {
             Title: req.body.Title,
@@ -10,15 +12,19 @@ exports.create = async (req, res) => {
             VideoIframe: req.body.VideoIframe,
         }
 
-        const video = await Video.create(data)
-
+        const video = await Video.create(data,{ transaction })
+        const course = await Courses.findOne({ where: { id: video.CoursesId }, transaction });
+        const dat = await Courses.update({ Status: 1 },{ where: { id: course.id }, transaction });
+        await transaction.commit();
         return res.status(200).json({
             video: video,
+            dat:dat,
             success: true,
             message: "Video Created SuccessFully"
         })
     } catch (error) {
         console.log(error)
+        await transaction.rollback();
         return res.status(500).json({
             error: error,
             success: false,

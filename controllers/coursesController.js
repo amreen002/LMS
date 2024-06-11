@@ -1,6 +1,6 @@
 
 const { Op, where, } = require('sequelize');
-const { Courses, Batch, User, Role, Categories, Student, Address, Teacher, Topic, Video, sequelize } = require('../models')
+const { Courses, Batch, User, Role, Categories, Student, Address, Teacher, Topic, Video, Lession, sequelize } = require('../models')
 
 
 const generateEnquiryId = async (id) => {
@@ -30,8 +30,17 @@ const generateEnquiryId = async (id) => {
 exports.create = async (req, res) => {
     let transaction = await sequelize.transaction();
     try {
-        req.body.userId = req.profile.id;
-        let courses = await Courses.create(req.body, { transaction })
+        let data = {
+            name: req.body.name,
+            userId: req.profile.id,
+            CoursePrice: req.body.CoursePrice,
+            CourseCategoryId: req.body.CourseCategoryId,
+            CourseUplod: req.file.path,
+            CourseDuration: req.body.CourseDuration,
+            AboutCourse: req.body.AboutCourse,
+            Description: req.body.Description,
+        }
+        let courses = await Courses.create(data, { transaction })
         const CourseCode = await generateEnquiryId(courses.id);
         await Courses.update(
             { CourseCode: CourseCode.toString() },
@@ -74,134 +83,327 @@ exports.findOne = async (req, res) => {
 }
 
 exports.findAll = async (req, res) => {
-    /*     try {
-            let courses = await Courses.findAll({
-                attributes: [
-                    'id',
-                    'name',
-                    'CourseDuration',
-                    'CoursePrice',
-                    'CourseCategoryId',
-                    'userId',
-                    'CourseCode',
-                    // Counting the number of students for each course
-                    [sequelize.fn('COUNT', sequelize.col('Students.CoursesId')), 'studentCount'],
-                    [sequelize.fn('COUNT', sequelize.col('Videos.CoursesId')), 'videoCount'],
-                ],
-                include: [
-                    { model: Topic },
-                    {
-                        model: User,
-                        include: [{ model: Role }]
-                    },
-                    {
-                        model: Categories
-                    },
-                    {
-                        model: Batch, include: [{ model: Teacher, }]
-                    },
-                    {
-                        model: Student,
-                        attributes: []
-                    },{
-                        model: Video,
-                        
-                    }
-    
-                ],
-                order: [['updatedAt', 'DESC']],
-                group: ['Courses.id', 'Batches.id', 'Topics.id','Videos.id']
-            });
-    
-    
-            let totalStudentCount = 0;
-            let totalVideoCount = 0;
-            for (let index = 0; index < courses.length; index++) {
-                totalStudentCount += parseInt(courses[index].getDataValue('studentCount'), 10);
-                totalVideoCount += parseInt(courses[index].getDataValue('videoCount'), 10);
-            }
-            res.status(200).json({
-                courses: courses,
-                coursescount: courses.length,
-                totalStudentCount: totalStudentCount,
-                totalVideoCount:totalVideoCount,
-                success: true,
-                message: "Get All Data Success"
-            });
-        } catch (error) {
-            console.log(error);
-            res.status(500).json({
-                error: error,
-                success: false,
-                message: "Failed to retrieve data"
-            });
-        } */
+    /*          try {
+                let courses = await Courses.findAll({
+                    attributes: [
+                        'id',
+                        'name',
+                        'CourseDuration',
+                        'CoursePrice',
+                        'CourseCategoryId',
+                        'userId',
+                        'CourseCode',
+                        // Counting the number of students for each course
+                        [sequelize.fn('COUNT', sequelize.col('Students.CoursesId')), 'studentCount'],
+                        [sequelize.fn('COUNT', sequelize.col('Videos.CoursesId')), 'videoCount'],
+                    ],
+                    include: [
+                        { model: Topic },
+                        {
+                            model: User,
+                            include: [{ model: Role }]
+                        },
+                        {
+                            model: Categories
+                        },
+                        {
+                            model: Batch, include: [{ model: Teacher, }]
+                        },
+                        {
+                            model: Student,
+                            attributes: []
+                        },{
+                            model: Video,
+                            
+                        }
+        
+                    ],
+                    order: [['updatedAt', 'DESC']],
+                    group: ['Courses.id', 'Batches.id', 'Topics.id','Videos.id']
+                });
+        
+        
+                let totalStudentCount = 0;
+                let totalVideoCount = 0;
+                for (let index = 0; index < courses.length; index++) {
+                    totalStudentCount += parseInt(courses[index].getDataValue('studentCount'), 10);
+                    totalVideoCount += parseInt(courses[index].getDataValue('videoCount'), 10);
+                }
+                res.status(200).json({
+                    courses: courses,
+                    coursescount: courses.length,
+                    totalStudentCount: totalStudentCount,
+                    totalVideoCount:totalVideoCount,
+                    success: true,
+                    message: "Get All Data Success"
+                });
+            } catch (error) {
+                console.log(error);
+                res.status(500).json({
+                    error: error,
+                    success: false,
+                    message: "Failed to retrieve data"
+                });
+            } 
+     */
+    let transaction;
 
     try {
-
-
+        // Start a transaction
+        transaction = await sequelize.transaction();
         // SQL Query
         let coursesQuery = `
-            SELECT
-                courses.id,
-                courses.name,
-                courses.CoursePrice,
-                courses.CourseCategoryId,
-                courses.CourseCode,
-                COUNT(DISTINCT students.id) AS studentCount,
-                COUNT(DISTINCT batches.id) AS batchesCount,
-                JSON_ARRAYAGG(
-                    JSON_OBJECT('id', students.id, 'CoursesId', students.CoursesId, 'Name', students.Name)
-                ) AS students,
-                JSON_ARRAYAGG(
-                    JSON_OBJECT('id', batches.id, 'CoursesId', batches.CoursesId, 'Title', batches.Title)
-                ) AS batches,
-                JSON_OBJECT('id', categories.id, 'name', categories.name) AS category,
-                JSON_OBJECT('id', users.id, 'name', users.name) AS user
-                JSON_OBJECT('id', users.id, 'name', users.name) AS user
-            FROM
-                courses
-            LEFT JOIN students ON students.CoursesId = courses.id
-            LEFT JOIN batches ON batches.CoursesId = courses.id
-            LEFT JOIN categories ON categories.id = courses.CourseCategoryId
-            LEFT JOIN users ON users.id = courses.userId
-            LEFT JOIN topics ON topics.id = courses.userId
-            GROUP BY
-                courses.id, categories.id, users.id
-        `;
+                SELECT
+                   courses.id,
+    courses.name,
+    courses.CourseDuration,
+    courses.CoursePrice,
+    courses.CourseCategoryId,
+    courses.userId,
+    courses.CourseCode,
+    courses.CourseUplod,
+    courses.Status,
+        courses.updatedAt,
+        courses.AboutCourse,
+        courses.Description,
+        COUNT(DISTINCT students.id) AS studentCount,
+        COUNT(DISTINCT batches.id) AS batchesCount,
+        COUNT(DISTINCT videos.id) AS videoCount,
+        COUNT(DISTINCT lessions.id) AS lessionCount,
+       JSON_ARRAYAGG( JSON_OBJECT('id', students.id, 'CoursesId', students.CoursesId, 'Name', students.Name)) AS Students,
+       JSON_ARRAYAGG(JSON_OBJECT('id', batches.id, 'CoursesId', batches.CoursesId, 'Title', batches.Title)) AS Batches,
+       JSON_OBJECT('id', categories.id, 'name', categories.name) AS Category,
+       JSON_OBJECT('id', users.id, 'name', users.name) AS User,
+       JSON_ARRAYAGG( JSON_OBJECT('id', topics.id, 'name', topics.name, 'CoursesId', topics.CoursesId)) AS Topics,
+       JSON_ARRAYAGG(JSON_OBJECT('id', videos.id, 'Title', videos.Title, 'CoursesId', videos.CoursesId,'TopicId',videos.TopicId,'VideoUplod',videos.VideoUplod,'VideoIframe',videos.VideoIframe)) AS Videos,
+       JSON_ARRAYAGG(JSON_OBJECT('id', lessions.id, 'LessionTitle', lessions.LessionTitle, 'CoursesId', lessions.CoursesId,'TopicId',lessions.TopicId,'LessionUpload',lessions.LessionUpload)) AS Lessions
+    FROM
+        courses
+    LEFT JOIN students ON students.CoursesId = courses.id
+    LEFT JOIN batches ON batches.CoursesId = courses.id
+    LEFT JOIN categories ON categories.id = courses.CourseCategoryId
+    LEFT JOIN users ON users.id = courses.userId
+    LEFT JOIN topics ON topics.CoursesId = courses.id
+    LEFT JOIN videos ON videos.CoursesId = courses.id
+    LEFT JOIN lessions ON lessions.CoursesId = courses.id
+    GROUP BY
+                courses.id, categories.id, users.id`;
 
         // Execute the raw SQL query
         let courses = await sequelize.query(coursesQuery, {
             type: sequelize.QueryTypes.SELECT,
-
+            transaction
         });
 
+        const cleanUpArrayFields = (data) => {
+            const fieldsToClean = ['Students', 'Batches', 'Topics', 'Videos', 'Lessions'];
+
+            fieldsToClean.forEach(field => {
+                if (data[field]) {
+                    // Remove potential duplicates
+                    if (Array.isArray(data[field])) {
+                        data[field] = data[field].filter((value, index, self) =>
+                            index === self.findIndex((t) => (
+                                t.id === value.id
+                            ))
+                        );
+
+                        // Convert single-element array to object
+                        if (data[field].length == 1) {
+                            data[field] = data[field][0];
+                        }
+                    }
+                }
+            });
+            return data;
+        };
+
+        // Assuming 'courses' contains only one course as you are filtering by courseId
+        if (courses.length > 0) {
+            courses[0] = cleanUpArrayFields(courses[0]);
+        }
         // Initialize total counts
         let totalStudentCount = 0;
         let totalBatchesCount = 0;
+        let totalVideoCount = 0;
+        let totalLessionCount = 0;
 
         // Sum the student and batch counts
         courses.forEach(course => {
             totalStudentCount += parseInt(course.studentCount, 10) || 0;
             totalBatchesCount += parseInt(course.batchesCount, 10) || 0;
+            totalVideoCount += parseInt(course.videoCount, 10) || 0;
+            totalLessionCount += parseInt(course.lessionCount, 10) || 0;
         });
-
+        await transaction.commit();
         res.status(200).json({
             courses: courses,
             coursescount: courses.length,
             totalStudentCount: totalStudentCount,
             totalBatchesCount: totalBatchesCount,
+            totalVideoCount: totalVideoCount,
+            totalLessionCount: totalLessionCount,
             success: true,
             message: "Get All Data Success"
         });
+
+
     } catch (error) {
         console.log(error);
+        await transaction.rollback();
         res.status(500).json({
             error: error,
             success: false,
             message: "Failed to retrieve data"
         });
     }
+};
+
+exports.courseFindOne = async (req, res) => {
+    let transaction;
+    try {
+        transaction = await sequelize.transaction();
+        let courseId = req.params.coursesId;
+        let coursesQuery = `
+    SELECT
+    courses.id,
+    courses.name,
+    courses.CourseDuration,
+    courses.CoursePrice,
+    courses.CourseCategoryId,
+    courses.userId,
+    courses.CourseCode,
+    courses.CourseUplod,
+    courses.Status,
+        courses.updatedAt,
+        courses.AboutCourse,
+        courses.Description,
+        COUNT(DISTINCT students.id) AS studentCount,
+        COUNT(DISTINCT batches.id) AS batchesCount,
+        COUNT(DISTINCT videos.id) AS videoCount,
+        COUNT(DISTINCT lessions.id) AS lessionCount,
+        JSON_ARRAYAGG(JSON_OBJECT('id', students.id, 'CoursesId', students.CoursesId, 'Name', students.Name)) AS students,
+        JSON_ARRAYAGG(JSON_OBJECT('id', batches.id, 'CoursesId', batches.CoursesId, 'Title', batches.Title)) AS batches,
+        JSON_OBJECT('id', categories.id, 'name', categories.name) AS category,
+        JSON_OBJECT('id', users.id, 'name', users.name) AS user,
+     JSON_ARRAYAGG(
+        JSON_OBJECT(
+            'id', topics.id, 
+            'name', topics.name, 
+            'CoursesId', topics.CoursesId,
+            'videos', (
+                SELECT JSON_ARRAYAGG(
+                    JSON_OBJECT(
+                        'id', videos.id,
+                        'Title', videos.Title,
+                        'CoursesId', videos.CoursesId,
+                        'TopicId', videos.TopicId,
+                        'VideoUplod', videos.VideoUplod,
+                        'VideoIframe', videos.VideoIframe
+                    )
+                ) 
+                FROM videos 
+                WHERE videos.TopicId = topics.id
+            )
+        )
+    ) AS topics,
+        JSON_ARRAYAGG(JSON_OBJECT('id', lessions.id, 'LessionTitle', lessions.LessionTitle, 'CoursesId', lessions.CoursesId,'TopicId',lessions.TopicId,'LessionUpload',lessions.LessionUpload)) AS lessions
+    FROM
+        courses
+LEFT JOIN students ON students.CoursesId = courses.id
+LEFT JOIN batches ON batches.CoursesId = courses.id
+LEFT JOIN categories ON categories.id = courses.CourseCategoryId
+LEFT JOIN users ON users.id = courses.userId
+LEFT JOIN topics ON topics.CoursesId = courses.id
+LEFT JOIN videos ON videos.CoursesId = courses.id
+LEFT JOIN lessions ON lessions.CoursesId = courses.id
+    WHERE  courses.id = :courseId
+    GROUP BY
+                courses.id, categories.id, users.id`;
+
+
+        // Execute the raw SQL query
+
+        let courses = await sequelize.query(coursesQuery, {
+            type: sequelize.QueryTypes.SELECT,
+            replacements: { courseId: courseId }
+        });
+
+        const cleanUpArrayFields = (data) => {
+            const fieldsToClean = ['students', 'batches', 'topics', 'videos', 'lessions'];
+
+            fieldsToClean.forEach(field => {
+                if (data[field]) {
+                    // Remove potential duplicates
+                    if (Array.isArray(data[field])) {
+                        data[field] = data[field].filter((value, index, self) =>
+                            index === self.findIndex((t) => (
+                                t.id === value.id
+                            ))
+                        );
+
+                        // Convert single-element array to object
+                        if (data[field].length === 1) {
+                            data[field] = data[field].filter((value, index, self) =>
+                                index === self.findIndex((t) => (
+                                    t.id === value.id
+                                ))
+                            );
+                        }
+                    }
+                }
+            });
+            return data;
+        };
+
+        // Assuming 'courses' contains only one course as you are filtering by courseId
+        if (courses.length > 0) {
+            courses[0] = cleanUpArrayFields(courses[0]);
+
+        }
+
+
+
+        let totalBatchesCount = 0;
+        let totalStudentCount = 0;
+        let totalVideoCount = 0;
+        let totalLessionCount = 0;
+
+        let dateFullYear
+        // Sum the student and batch counts
+        courses.forEach(course => {
+            const date = new Date(course.updatedAt);
+            dateFullYear = String(date.getDate()).padStart(2, '0') + "/" + String(date.getMonth() + 1).padStart(2, '0') + "/" + date.getFullYear();
+            totalStudentCount += parseInt(course.studentCount, 10) || 0;
+            totalBatchesCount += parseInt(course.batchesCount, 10) || 0;
+            totalVideoCount += parseInt(course.videoCount, 10) || 0;
+            totalLessionCount += parseInt(course.lessionCount, 10) || 0;
+        });
+
+        let obj = Object.assign({}, courses);
+        // Commit the transaction
+        await transaction.commit();
+        res.status(200).json({
+            courses: obj[0],
+            coursescount: courses.length,
+            totalStudentCount: totalStudentCount,
+            totalVideoCount: totalVideoCount,
+            totalLessionCount: totalLessionCount,
+            Lastupdated: dateFullYear,
+            success: true,
+            message: "Get All Data Success"
+        });
+    } catch (error) {
+        console.log(error);
+        await transaction.rollback();
+        res.status(500).json({
+            error: error,
+            success: false,
+            message: "Failed to retrieve data"
+        });
+    }
+
+
 };
 
 
@@ -216,9 +418,18 @@ exports.update = async (req, res) => {
                 message: "Course not found"
             });
         }
-
+        let data = {
+            name: req.body.name,
+            userId: req.profile.id,
+            CoursePrice: req.body.CoursePrice,
+            CourseCategoryId: req.body.CourseCategoryId,
+            CourseUplod: req.file.path,
+            CourseDuration: req.body.CourseDuration,
+            AboutCourse: req.body.AboutCourse,
+            Description: req.body.Description,
+        }
         // Update the course
-        await Courses.update(req.body, { where: { id: courseId } });
+        await Courses.update(data, { where: { id: courseId } });
 
         // Fetch the updated course
         course = await Courses.findOne({ where: { id: courseId } });
@@ -289,10 +500,17 @@ exports.coursecode = async (req, res) => {
         let coursesQuery = `
             SELECT
                 courses.id,
-                courses.name,
-                courses.CoursePrice,
-                courses.CourseCategoryId,
-                courses.CourseCode,
+    courses.name,
+    courses.CourseDuration,
+    courses.CoursePrice,
+    courses.CourseCategoryId,
+    courses.userId,
+    courses.CourseCode,
+    courses.CourseUplod,
+    courses.Status,
+        courses.updatedAt,
+        courses.AboutCourse,
+        courses.Description,
                 COUNT(DISTINCT students.id) AS studentCount,
                 COUNT(DISTINCT batches.id) AS batchesCount,
                 JSON_ARRAYAGG(
