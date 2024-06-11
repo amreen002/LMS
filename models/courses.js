@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     name: {
       type: DataTypes.STRING
     },
-    userId: {
+    userId:{
       type: DataTypes.INTEGER,
     },
     CoursePrice: {
@@ -57,6 +57,7 @@ module.exports = (sequelize, DataTypes) => {
       field: 'Description',
       type: DataTypes.TEXT('long'),   
     }
+
   }, {
     sequelize,
     modelName: 'Courses',

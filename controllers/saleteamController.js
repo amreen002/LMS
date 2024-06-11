@@ -3,6 +3,7 @@ const { Op } = require('sequelize');
 const { SaleTeam, User } = require('../models')
 exports.create = async (req, res) => {
     try {
+     /*    req.body.roleId =req.profile.id; */
         const saleteam = await SaleTeam.create(req.body)
         return res.status(200).json({
             saleteam: saleteam,

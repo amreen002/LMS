@@ -8,7 +8,7 @@ router.get('/listfrontdesk',checkauth, getLogedInUser, frontdesk.findAll);
 
 router.get('/listfrontdesk/:frontdeskId', checkauth, getLogedInUser,frontdesk.findOne);
 
-router.patch('/viewsfrontdesk/:frontdeskId', /* checkauth, getLogedInUser, */ frontdesk.update);
+router.patch('/viewsfrontdesk/:frontdeskId',  checkauth, getLogedInUser, frontdesk.update);
 
 router.delete('/deletefrontdesk/:frontdeskId', checkauth, getLogedInUser, frontdesk.delete);
 

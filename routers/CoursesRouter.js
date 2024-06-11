@@ -8,9 +8,11 @@ router.post('/addcourses', checkauth, getLogedInUser,upload.single('file'), cour
 router.get('/listcourses',checkauth, getLogedInUser ,courses.findAll);
 
 router.get('/courses',courses.findAll);
+
 router.get('/courses/:coursesId',courses.courseFindOne);
 
-router.get('/listcourses/:coursesId', checkauth, getLogedInUser, courses.findOne);
+
+router.get('/listcourses/:coursesId', checkauth, getLogedInUser,courses.findOne);
 
 router.get('/coursecode/:coursecodeId',checkauth, getLogedInUser,courses.coursecode);
 
@@ -23,6 +25,5 @@ router.put('/viewscourses/:coursesId', checkauth, getLogedInUser, upload.single(
 router.delete('/deletecourses/:coursesId', checkauth, getLogedInUser, courses.delete);
 
 router.put('/addcontentcourses/:coursesId', checkauth, getLogedInUser, courses.addcontentcourses);
-
 
 module.exports = router;

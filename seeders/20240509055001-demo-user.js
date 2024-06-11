@@ -7,7 +7,11 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     const password = '123';
     const hashedPassword = await bcrypt.hash(password, 10);
+<<<<<<< HEAD
+    let ArrayRole = ['Super Admin', 'Admin', 'Instructor', 'Student', 'Guest/Viewer', 'Sale Department', 'Telecaller Department', 'Telecaller Team', 'Front Desk', 'Counselor Department', 'Account Department']
+=======
     let ArrayRole = ['Super Admin', 'Admin', 'Instructor', 'Student', 'Guest/Viewer', 'Sale Department', 'Telecaller Department', 'Telecaller Team', 'Front Desk', 'Counselor Department', 'Account Department','Administrator']
+>>>>>>> 5765c38c72d7b75d4116b5360ac4e2bdfb80c8cd
     // Find or create the role "Super Admin"
     let where = {};
     let department
