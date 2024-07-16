@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Videos', {
+    await queryInterface.createTable('videos', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -23,11 +23,15 @@ module.exports = {
       },
       VideoUplod: {
         field: 'VideoUplod', 
-        type: Sequelize.STRING
+        type: Sequelize.JSON
       },
       VideoIframe: {
         field: 'VideoIframe', 
         type: Sequelize.STRING
+      },
+      userId:{
+        field: 'userId',
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
@@ -40,6 +44,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Videos');
+    await queryInterface.dropTable('videos');
   }
 };

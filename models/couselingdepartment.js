@@ -105,6 +105,7 @@ module.exports = (sequelize, DataTypes) => {
   },{
     sequelize,
     modelName: 'CouselingDepartment',
+    tableName: 'couselingdepartments',
   });
   return CouselingDepartment;
 };

@@ -69,6 +69,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Batch',
+    tableName: 'batches',
+
   });
   return Batch;
 };

@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('users', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -16,7 +16,8 @@ module.exports = {
         type: Sequelize.STRING
       },
       phoneNumber: {
-        type: Sequelize.BIGINT
+        type: Sequelize.BIGINT,
+        defaultValue:0
       },
       email: {
         type: Sequelize.STRING
@@ -51,6 +52,11 @@ module.exports = {
         allowNull: true,
         defaultValue: 0,
       },
+      AddressableId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        defaultValue: 0,
+      },
       roleName: {
         type: Sequelize.ENUM('Super Admin', 'Admin', 'Sub Admin')
       },
@@ -80,6 +86,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Users');
+    await queryInterface.dropTable('users');
   }
 };

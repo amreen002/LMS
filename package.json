@@ -4,13 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+<<<<<<< HEAD
     "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
+=======
+    "start": "cross-env NODE_ENV=development nodemon app.js",
+    "test": "test"
+>>>>>>> master
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "sequelize-cli": "^6.6.2"
   },
   "dependencies": {

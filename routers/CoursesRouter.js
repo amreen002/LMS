@@ -1,13 +1,18 @@
 const express = require('express');
 let router = express.Router();
-let upload = require('../middlware/upload')
+let { uploadPDF, uploadImage, uploadVideo }  = require('../middlware/upload')
 let courses = require('../controllers/coursesController');
 let {checkauth,getLogedInUser} = require('../middlware/userAuth')
-router.post('/addcourses', checkauth, getLogedInUser,upload.single('file'), courses.create)
 
-router.get('/listcourses',checkauth, getLogedInUser ,courses.findAll);
+const classes  = require('../validations/classvalidator');
 
-router.get('/courses',courses.findAll);
+const validations = require('../validations/validator');
+
+router.post('/addcourses', checkauth,getLogedInUser,classes.classValidator,validations.validate,uploadImage.single('file'),courses.create)
+
+router.get('/listcourses', checkauth, getLogedInUser ,courses.findAll);
+
+router.get('/courses',courses.findAllCourse);
 
 router.get('/courses/:coursesId',courses.courseFindOne);
 
@@ -20,10 +25,18 @@ router.get('/batche/:coursecodeId', checkauth, getLogedInUser,courses.coursebatc
 
 router.get('/students/:coursecodeId',checkauth, getLogedInUser,courses.coursestudents);
 
+<<<<<<< HEAD
 router.put('/viewscourses/:coursesId', checkauth, getLogedInUser, upload.single('file'),courses.update);
 
 router.delete('/deletecourses/:coursesId', checkauth, getLogedInUser, courses.delete);
 
 router.put('/addcontentcourses/:coursesId', checkauth, getLogedInUser, courses.addcontentcourses);
+=======
+router.patch('/viewscourses/:coursesId', checkauth, getLogedInUser, uploadImage.single('file'),courses.update);
+
+router.delete('/deletecourses/:coursesId', checkauth, getLogedInUser, courses.delete);
+
+router.patch('/addcontentcourses/:coursesId', checkauth, getLogedInUser, courses.addcontentcourses);
+>>>>>>> master
 
 module.exports = router;

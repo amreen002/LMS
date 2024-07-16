@@ -11,6 +11,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.belongsTo(models.Courses, { foreignKey: 'CoursesId' });
+      this.belongsTo(models.User, { foreignKey: 'userId' });
+      this.hasMany(models.Lession, { foreignKey: 'TopicId' });
+      this.hasMany(models.Video, { foreignKey: 'TopicId' });
     }
   }
   Topic.init({
@@ -22,9 +25,14 @@ module.exports = (sequelize, DataTypes) => {
       field: 'CoursesId',
       type: DataTypes.INTEGER
     },
+    userId:{
+      field: 'userId', 
+      type: DataTypes.INTEGER
+    }
   }, {
     sequelize,
     modelName: 'Topic',
+    tableName: 'topics',
   });
   return Topic;
 };

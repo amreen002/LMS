@@ -15,7 +15,7 @@ module.exports = {
       });
     }
 
-    await queryInterface.bulkInsert('Countries', country);
+    await queryInterface.bulkInsert('countries', country);
 
     let countries = await Countries.findAll();
 
@@ -118,12 +118,13 @@ module.exports = {
     }
 
 
-    await queryInterface.bulkInsert('Staties', states);
-    await queryInterface.bulkInsert('Cities', cities);
+    await queryInterface.bulkInsert('staties', states);
+    await queryInterface.bulkInsert('cities', cities);
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkDelete('Countries', null, {});
-    await queryInterface.bulkDelete('State', null, {});
+    await queryInterface.bulkDelete('countries', null, {});
+    await queryInterface.bulkDelete('staties', null, {});
+    await queryInterface.bulkDelete('cities', null, {});
   }
 };

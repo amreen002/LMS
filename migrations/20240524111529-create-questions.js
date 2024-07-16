@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Questions', {
+    await queryInterface.createTable('questions', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,11 +11,11 @@ module.exports = {
       },
       Questions: {
         field: 'Questions',
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT('long')
       },
       Type: {
         field: 'Type',
-        type: Sequelize.ENUM('Easy','Medium','Hard')
+        type: Sequelize.ENUM('Number of Easy Questions (1 Mark)','Number of Medium Questions (2 Mark)','Number of Hard Questions (4 Mark)')
       },
       QuizzeId:{
         field: 'QuizzeId',
@@ -43,7 +43,15 @@ module.exports = {
       },
       Answer:{
         field: 'Answer',
-        type: Sequelize.STRING
+        type: Sequelize.JSON
+      },
+      userId:{
+        field: 'userId',
+        type: Sequelize.INTEGER
+      },
+      studentId:{
+        field: 'studentId',
+        type: Sequelize.JSON
       },
       createdAt: {
         allowNull: false,
@@ -56,6 +64,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Questions');
+    await queryInterface.dropTable('questions');
   }
 };

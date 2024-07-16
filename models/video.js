@@ -11,6 +11,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.belongsTo(models.Courses, { foreignKey: 'CoursesId' });
+<<<<<<< HEAD
+=======
+      this.belongsTo(models.Topic, { foreignKey: 'TopicId' });
+      this.belongsTo(models.User, { foreignKey: 'userId' });
+>>>>>>> master
     }
   }
   Video.init({
@@ -28,15 +33,20 @@ module.exports = (sequelize, DataTypes) => {
      },
     VideoUplod: { 
       field: 'VideoUplod', 
-      type: DataTypes.STRING
+      type: DataTypes.JSON
      },
     VideoIframe: { 
       field: 'VideoIframe', 
       type: DataTypes.STRING
      },
+     userId:{
+      field: 'userId', 
+      type: DataTypes.INTEGER
+    }
   }, {
     sequelize,
     modelName: 'Video',
+    tableName: 'videos',
   });
   return Video;
 };

@@ -28,6 +28,10 @@ module.exports = (sequelize, DataTypes) => {
         constraints: false,
         as: 'Cities'
       });
+      this.belongsTo(models.User, {
+        foreignKey: 'AddressableId',
+        constraints: false,
+      });
     }
   };
   Address.init({
@@ -87,7 +91,8 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     sequelize,
-    modelName: 'Address'
+    modelName: 'Address',
+    tableName: 'addresses',
   });
   return Address;
 };

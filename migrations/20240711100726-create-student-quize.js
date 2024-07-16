@@ -2,47 +2,47 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('userpermissionroles', {
+    await queryInterface.createTable('studentquizes', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      modelName:{
-        field: 'modelName',
+      QuizeId: {
+        field: 'QuizeId',
+        type: Sequelize.INTEGER,
+      },
+      QuestionId: {
+        field: 'QuestionId',
+        type: Sequelize.INTEGER,
+      },
+      StudentId: {
+        field: 'StudentId',
+        type: Sequelize.INTEGER,
+      },
+      AnswersStudent: {
+        field: 'AnswersStudent',
+        type:  Sequelize.STRING,
+      },
+      Incorrect: {
+        field: 'Incorrect',
+        type: Sequelize.BOOLEAN,
+        defaultValue:0
+      },
+      Correct: {
+        field: 'Correct',
+        type: Sequelize.BOOLEAN,
+        defaultValue:0
+      },
+      TimeTaken: {
+        field: 'TimeTaken',
+        type: Sequelize.TIME,
+      },
+
+      AnswersStudent: {
+        field: 'AnswersStudent',
         type: Sequelize.STRING,
-        allowNull: true
-      },
-      RoleId: {
-        field: 'RoleId',
-        type: Sequelize.INTEGER,
-        allowNull: true
-      },
-      UserId: {
-        field: 'UserId',
-        type: Sequelize.INTEGER,
-        allowNull: true
-      },
-      Create: {
-        field: 'Create',
-        type: Sequelize.BOOLEAN,
-        defaultValue:0
-      },
-      Read: {
-        field: 'Read',
-        type: Sequelize.BOOLEAN,
-        defaultValue:0
-      },
-      Update: {
-        field: 'Update',
-        type: Sequelize.BOOLEAN,
-        defaultValue:0
-      },
-       Delete: {
-        field: 'Delete',
-        type: Sequelize.BOOLEAN,
-        defaultValue:0
       },
       createdAt: {
         allowNull: false,
@@ -55,6 +55,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('userpermissionroles');
+    await queryInterface.dropTable('studentquizes');
   }
 };

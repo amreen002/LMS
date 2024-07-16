@@ -1,4 +1,4 @@
-const { Op } = require('sequelize');
+const { Op, where } = require('sequelize');
 const bcrypt = require('bcrypt');
 const { Student, User, Role, Address, Courses,Batch,Teacher, sequelize } = require('../models')
 exports.create = async (req, res) => {
@@ -36,18 +36,23 @@ exports.create = async (req, res) => {
 
         let students = await Student.create(studentData, { transaction });
 
-        // Set the necessary fields for the Address creation
-        req.body.AddressableId = students.id;
-        req.body.AddressableType = "Student";
+        const addressData = {
+            AddressableId: students.id,
+            AddressableType: "Instructor",
+            ...req.body
+        };
 
-        // Create the Address entry
-        let address = await Address.create(req.body, { transaction });
+        const address = await Address.create(addressData, { transaction });
+
         await Student.update(
             { AddressableId: address.id },
             { where: { id: students.id }, transaction }
         );
-        let users = {
-            studentId: students.id,
+
+        const updatedStudent = await Student.findOne({ where: { id: students.id }, transaction });
+
+        const userData = {
+            students: students.id,
             name: students.Name,
             userName: students.Username,
             phoneNumber: students.PhoneNumber,
@@ -56,37 +61,51 @@ exports.create = async (req, res) => {
             assignToUsers: req.profile.id,
             departmentId: 4,
             roleName: "Admin",
-        }
-        await User.create(users, { transaction });
+            AddressableId: address.id,
+            image: req.file? req.file.filename :null,
+            src:  req.file? req.file.path :null,
+        };
+
+        const user = await User.create(userData, { transaction });
+
         await transaction.commit();
+
         return res.status(200).json({
-            students: students,
+            students: updatedStudent,
             address: address,
+            user: user,
             success: true,
-            message: "Student Created SuccessFully"
-        })
+            message: "Student created successfully"
+        });
 
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        await transaction.rollback();
         return res.status(500).json({
             error: error,
             success: false,
-            message: "Student error"
-        })
+            message: "Error creating Student"
+        });
     }
+};
 
-}
 
 exports.findOne = async (req, res) => {
+    const transaction = await sequelize.transaction();
     try {
-        const students = await Student.findOne({ where: { id: req.params.studentsId }, include: [{ model: User, include: [{ model: Role }] }, { model: Address }, { model: Courses }], order: [['updatedAt', 'DESC']] });
-        res.status(200).json({
+        const students = await Student.findOne({ where: 
+            { id: req.params.studentsId}, attributes: { exclude: ['Password'] },
+            include: [{ model: User,attributes: { exclude: ['password','expireToken','resentPassword','passwordResetOtp'] }, include: [{ model: Role }] }, { model: Courses },
+            { model: Batch,  include: [{model: Teacher,}]}], order: [['updatedAt', 'DESC']],transaction });
+            await transaction.commit();
+            res.status(200).json({
             students: students,
             success: true,
             message: "get one Student by ID"
         });
     } catch (error) {
         console.log(error)
+        await transaction.rollback();
         res.status(500).json({
             error: error,
             success: false,
@@ -96,6 +115,7 @@ exports.findOne = async (req, res) => {
 }
 
 exports.findAll = async (req, res) => {
+    const transaction = await sequelize.transaction();
     try {
         /*      const searchTerm = req.query.searchTerm;
              if (searchTerm) {
@@ -107,18 +127,64 @@ exports.findAll = async (req, res) => {
                  };
              }
         */
-
-        let students = await Student.findAll({
-            include: [{
-                model: User, include:
-                    [{ model: Role }]
-            },
-            { model: Address },
-            { model: Courses },
-            { model: Batch,  include: [{model: Teacher,}]},
-            ],
-            order: [['updatedAt', 'DESC']]
-        })
+        let where ;
+        let students
+        const loggedInUserId = req.profile.id;
+        const loggedInUser = await User.findOne({ where: { id: loggedInUserId }, attributes: [
+            "id",
+            "name",
+            "userName",
+            "phoneNumber",
+            "email",
+            "assignToUsers",
+            "departmentId",
+            "teacherId",
+            "studentId",
+            "roleName",
+            "image",
+            "src",
+            "address",
+            "message",
+            "active",
+        ], include: [{ model: Role }] ,transaction});
+        if (loggedInUser.Role.Name == "Admin" || loggedInUser.Role.Name == "Administrator") 
+            where = {}  
+        else {
+            where = { roleId: loggedInUserId }
+        }
+        if (req.query.Instructor) {
+            if (loggedInUser.Role.Name == "Instructor"){
+                students = await Student.findAll({
+                    attributes: { exclude: ['Password'] },
+                    include: [{
+                        model: User,include:
+                            [{ model: Role }]
+                    },
+                    { model: Address },
+                    { model: Courses },
+                    { model: Batch ,where :{InstructorId: loggedInUser.teacherId },  include: [{model: Teacher,}]},
+                    ],
+                    order: [['updatedAt', 'DESC']],transaction
+                })
+            }
+        }else{
+            students = await Student.findAll({
+                where,
+                attributes: { exclude: ['Password'] },
+                include: [{
+                    model: User,include:
+                        [{ model: Role }]
+                },
+                { model: Address },
+                { model: Courses },
+                { model: Batch,  include: [{model: Teacher,}]},
+                ],
+                order: [['updatedAt', 'DESC']],transaction
+            })
+        }
+      
+      
+        await transaction.commit();
         res.status(200).json({
             students: students,
             success: true,
@@ -126,6 +192,7 @@ exports.findAll = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
+        await transaction.rollback();
         res.status(500).json({
             error: error,
             success: false,
@@ -135,7 +202,7 @@ exports.findAll = async (req, res) => {
 };
 
 exports.update = async (req, res) => {
-    let transaction = await sequelize.transaction();
+    const transaction = await sequelize.transaction();
     try {
         let data = {
             Name: req.body.Name,
@@ -149,79 +216,82 @@ exports.update = async (req, res) => {
             CoursesId: req.body.CoursesId,
             BatchId: req.body.BatchId
         }
-        let students = await Student.update(data, { where: { id: req.params.studentsId }, order: [['updatedAt', 'DESC']] });
-        // Find the associated address
-        const address = await Address.findOne({ where: { AddressableId: req.params.studentsId }, transaction });
+        await Student.update(data, { where: { id: req.params.studentsId }, order: [['updatedAt', 'DESC']] });
+     
 
-        if (!address) {
+        const user = await User.findOne({ where: { studentId: req.params.studentsId }, transaction });
+        if (!user) {
             await transaction.rollback();
             return res.status(404).json({
                 success: false,
-                message: "Address not found"
+                message: "Associated user not found"
             });
         }
 
-        // Re-fetch the updated FrontDesk entry
-        students = await Student.findOne({ where: { id: req.params.studentsId }, transaction });
-        if (!students) {
-            await transaction.rollback();
-            return res.status(404).json({
-                success: false,
-                message: "Students not found"
-            });
-        }
+        let address = await Address.findOne({ where: { AddressableId: req.params.studentsId }, transaction });
 
-        // Set the required fields for updating the Address entry
-        req.body.AddressableId = students.id;
-        req.body.AddressableType = "Student";
-
-        // Update the Address entry
+        req.body.AddressableId = req.params.studentsId;
+        req.body.AddressableType = "Instructor";
         await Address.update(req.body, { where: { id: address.id }, transaction });
 
-        // Retrieve the updated Address entry
-        const updatedAddress = await Address.findOne({ where: { id: address.id }, transaction });
-
-        let users = {
-            name: students.Name,
-            userName: students.Username,
-            phoneNumber: students.PhoneNumber,
-            email: students.Email,
-/*             assignToUsers: req.profile.id, */
-            departmentId: 4,
-            roleName: "Admin",
+        const updatedStudent = await Student.findOne({ where: { id: req.params.studentsId }, transaction });
+        if (!updatedStudent) {
+            await transaction.rollback();
+            return res.status(404).json({
+                success: false,
+                message: "Student not found"
+            });
         }
-        let usersupdate = await User.findOne({ where: { studentId: req.params.studentsId }, transaction });
-        await User.update(users, { where: { id: usersupdate.id }, transaction });
-        // Commit the transaction
+
+        const updatedAddress = await Address.findOne({ where: { id: address }, transaction });
+
+        const updatedUserData = {
+            name: updatedStudent.Name,
+            userName: updatedStudent.Username,
+            phoneNumber: updatedStudent.PhoneNumber,
+            email: updatedStudent.Email,
+            departmentId: 4, // Assuming departmentId 3 corresponds to 'Instructor'
+            roleName: "Admin",
+            studentId: updatedStudent.id,
+            teacherId: 0,
+            AddressableId: updatedStudent.AddressableId,
+            image: req.file ? req.file.filename : user.image,
+            src: req.file ? req.file.path : user.src,
+        };
+
+        await User.update(updatedUserData, { where: { id: user.id }, transaction });
         await transaction.commit();
 
         res.status(200).json({
-            students: students,
+            students: updatedStudent,
             address: updatedAddress,
             success: true,
-            message: "Update Successfully Student"
+            message: "Teacher updated successfully"
         });
-
     } catch (error) {
         console.log(error)
+        await transaction.rollback();
         res.status(500).json({
             error: error,
             success: false,
-            message: "error  While Update The Student"
+            message: "Error while updating the teacher"
         });
     }
 
 }
 
 exports.delete = async (req, res) => {
+    const transaction = await sequelize.transaction();
     try {
-        const students = await Student.destroy({ where: { id: req.params.studentsId } });
+        const students = await Student.destroy({ where: { id: req.params.studentsId } ,transaction});
+        await transaction.commit();
         res.status(200).json({
             students: students,
             success: true,
             message: "Delete Successfully Student"
         });
     } catch (error) {
+        await transaction.rollback();
         res.status(500).json({
             error: error,
             success: false,

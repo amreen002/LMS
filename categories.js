@@ -15,13 +15,13 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.User, { foreignKey: 'userId' }); 
     }
   }
-  Categories.init({
+  categories.init({
     name: {type:DataTypes.STRING},
     userId:{type:DataTypes.INTEGER}
   }, {
     sequelize,
-    modelName: 'Categories',
+    modelName: 'categories',
     tableName: 'categories',
   });
-  return Categories;
+  return categories;
 };

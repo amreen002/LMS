@@ -14,6 +14,14 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.Batch, { foreignKey: 'userId' });  
       this.hasMany(models.Quize, { foreignKey: 'userId' }); 
       this.hasMany(models.Categories, { foreignKey: 'userId' });  
+      this.hasMany(models.Questions, { foreignKey: 'userId' }); 
+      this.hasMany(models.Topic, { foreignKey: 'userId' }); 
+      this.hasMany(models.Lession, { foreignKey: 'userId' });
+      this.hasMany(models.Video, { foreignKey: 'userId' });
+      this.belongsTo(models.Address, {
+        foreignKey: 'AddressableId',
+        constraints: false,
+      });
     }
   }
   User.init({
@@ -24,7 +32,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING
     },
     phoneNumber: {
-      type: DataTypes.BIGINT
+      type: DataTypes.BIGINT,
+      defaultValue:0
     },
     email: {
       type: DataTypes.STRING
@@ -59,6 +68,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       defaultValue: 0,
     },
+    AddressableId: {
+      type:DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 0,
+    },
     roleName: {
       type: DataTypes.ENUM('Super Admin','Admin','Sub Admin')
     },
@@ -80,6 +94,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'User',
+    tableName: 'users',
   });
   return User;
 };

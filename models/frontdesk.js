@@ -102,6 +102,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'FrontDesk',
+    tableName: 'frontdesks',
   });
   return FrontDesk;
 };

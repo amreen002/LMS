@@ -70,6 +70,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'TelecallerDepartment',
+    tableName: 'telecallerdepartments',
   });
   return TelecallerDepartment;
 };

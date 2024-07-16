@@ -7,16 +7,13 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     const password = '123';
     const hashedPassword = await bcrypt.hash(password, 10);
-<<<<<<< HEAD
-    let ArrayRole = ['Super Admin', 'Admin', 'Instructor', 'Student', 'Guest/Viewer', 'Sale Department', 'Telecaller Department', 'Telecaller Team', 'Front Desk', 'Counselor Department', 'Account Department']
-=======
+
     let ArrayRole = ['Super Admin', 'Admin', 'Instructor', 'Student', 'Guest/Viewer', 'Sale Department', 'Telecaller Department', 'Telecaller Team', 'Front Desk', 'Counselor Department', 'Account Department','Administrator']
->>>>>>> 5765c38c72d7b75d4116b5360ac4e2bdfb80c8cd
     // Find or create the role "Super Admin"
     let where = {};
     let department
     for (let index = 0; index < ArrayRole.length; index++) {
-      department = await queryInterface.bulkInsert('Roles', [{
+      department = await queryInterface.bulkInsert('roles', [{
         Name: ArrayRole[index],
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -24,7 +21,7 @@ module.exports = {
     }
     let departments = await Role.findOne({ where: { Name: 'Super Admin' } });
     let user;
-    user = await queryInterface.bulkInsert('Users', [{
+    user = await queryInterface.bulkInsert('users', [{
       name: 'Super Admin',
       userName: 'SuperAdmin001',
       phoneNumber: '1234567890',
@@ -42,10 +39,10 @@ module.exports = {
 
 
     user = await User.findOne({ where, include: [{ model: Role, where: { name: 'Super Admin' } }] });
-    let CoureseArray = ['Courses Look For', 'Advanced Digital Marketing Course', 'Professional Digital Marketing Course', '45 Days Digital Marketing Course', 'Web Development Course', 'Python Language Course', 'Data Analytics Course', 'Data Science Course', 'App Development Course', 'Ethical Hacking Course']
+    let CoureseArray = ['Class 1st', 'Class 2nd', 'Class 3rd', 'Class 4th', 'Class 5th', 'Class 6th', 'Class 7th', 'Class 8th','Class 9th','Class 10th','Class 11th','Class 12th']
     let courses
     for (let index = 0; index < CoureseArray.length; index++) {
-      courses = await queryInterface.bulkInsert('Courses', [{
+      courses = await queryInterface.bulkInsert('courses', [{
         name: CoureseArray[index],
         userId: user.id,
         createdAt: new Date(),
@@ -57,7 +54,7 @@ module.exports = {
     let modelNameArray = ['Lead', 'User', 'Lead Allotted', 'Lead Allotted View']
     if (userAll[0].Role.Name == 'Super Admin') {
       for (let index = 0; index < modelNameArray.length; index++) {
-        userPermissionRoles = await queryInterface.bulkInsert('UserPermissionRoles', [{
+        userPermissionRoles = await queryInterface.bulkInsert('userpermissionroles', [{
           RoleId: userAll[0].Role.id,
           UserId: userAll[0].id,
           modelName: modelNameArray[index],
@@ -73,9 +70,9 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkDelete('Users', null, {});
-    await queryInterface.bulkDelete('Roles', null, {});
-    await queryInterface.bulkDelete('UserPermissionRoles', null, {});
+    await queryInterface.bulkDelete('users', null, {});
+    await queryInterface.bulkDelete('roles', null, {});
+    await queryInterface.bulkDelete('userpermissionroles', null, {});
   }
 };
 

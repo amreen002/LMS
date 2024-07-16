@@ -10,18 +10,21 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      this.belongsTo(models.User, { foreignKey: 'userId' });
       this.belongsTo(models.Quize, { foreignKey: 'QuizzeId' });
       this.belongsTo(models.CategoriesQuestion, { foreignKey: 'CategoryId' });
+      this.belongsTo(models.Student, { foreignKey: 'studentId' });
+      this.hasMany(models.StudentQuize, { foreignKey: 'QuestionId' });
     }
   }
   Questions.init({
     Questions: {
       field: 'Questions',
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT('long'),
     },
     Type: {
       field: 'Type',
-      type: DataTypes.ENUM('Easy','Medium','Hard')
+      type: DataTypes.ENUM('Number of Easy Questions (1 Mark)','Number of Medium Questions (2 Mark)','Number of Hard Questions (4 Mark)')
     },
     QuizzeId:{
       field: 'QuizzeId',
@@ -49,11 +52,22 @@ module.exports = (sequelize, DataTypes) => {
     },
     Answer:{
       field: 'Answer',
-      type: DataTypes.STRING
+      type: DataTypes.JSON
     },
+    userId:{
+      field: 'userId',
+      type: DataTypes.INTEGER
+    },
+    studentId:{
+      field: 'studentId',
+      type: DataTypes.JSON
+    },
+   
+    
   }, {
     sequelize,
     modelName: 'Questions',
+    tableName: 'questions',
   });
   return Questions;
 };
