@@ -25,18 +25,10 @@ router.get('/batche/:coursecodeId', checkauth, getLogedInUser,courses.coursebatc
 
 router.get('/students/:coursecodeId',checkauth, getLogedInUser,courses.coursestudents);
 
-<<<<<<< HEAD
-router.put('/viewscourses/:coursesId', checkauth, getLogedInUser, upload.single('file'),courses.update);
-
-router.delete('/deletecourses/:coursesId', checkauth, getLogedInUser, courses.delete);
-
-router.put('/addcontentcourses/:coursesId', checkauth, getLogedInUser, courses.addcontentcourses);
-=======
 router.patch('/viewscourses/:coursesId', checkauth, getLogedInUser, uploadImage.single('file'),courses.update);
 
 router.delete('/deletecourses/:coursesId', checkauth, getLogedInUser, courses.delete);
 
 router.patch('/addcontentcourses/:coursesId', checkauth, getLogedInUser, courses.addcontentcourses);
->>>>>>> master
 
 module.exports = router;

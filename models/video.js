@@ -11,11 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.belongsTo(models.Courses, { foreignKey: 'CoursesId' });
-<<<<<<< HEAD
-=======
       this.belongsTo(models.Topic, { foreignKey: 'TopicId' });
       this.belongsTo(models.User, { foreignKey: 'userId' });
->>>>>>> master
     }
   }
   Video.init({
